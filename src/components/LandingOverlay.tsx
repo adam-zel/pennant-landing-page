@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import "../styles/typography.css";
 
 const BODY_COPY =
-  "Pennant is a baseball companion for iPhone. Pick your team once. Open it every day. It tells you what's happening, who's playing, and where your team stands.";
+  "Pennant is your new baseball companion. Pick your team once. Open it every day. It tells you what's happening, who's playing, and where your team stands.";
 
 /** Paper “Team Matchup” row — letter placeholders until real marks ship. */
 const MATCHUP = ["S", "O", "O", "O", "N"] as const;
@@ -22,18 +22,20 @@ export function LandingOverlay() {
           </span>
         </h1>
         <p className="pennant-body">{BODY_COPY}</p>
-        <div className="pennant-matchup" aria-hidden>
-          {MATCHUP.map((ch, i) => (
-            <Fragment key={`${ch}-${i}`}>
-              {i > 0 ? (
-                <div className="pennant-matchup__divider">
-                  <span />
-                  <span />
-                </div>
-              ) : null}
-              <div className="pennant-matchup__cell">{ch}</div>
-            </Fragment>
-          ))}
+        <div className="pennant-matchup-shell" aria-hidden>
+          <div className="pennant-matchup">
+            {MATCHUP.map((ch, i) => (
+              <Fragment key={`${ch}-${i}`}>
+                {i > 0 ? (
+                  <div className="pennant-matchup__divider">
+                    <span />
+                    <span />
+                  </div>
+                ) : null}
+                <div className="pennant-matchup__cell">{ch}</div>
+              </Fragment>
+            ))}
+          </div>
         </div>
       </div>
     </div>

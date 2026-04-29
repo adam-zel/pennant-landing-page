@@ -15,7 +15,10 @@
 .pennant-display-stack {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 0.12em;
+  width: 100%;
+  text-align: center;
 }
 
 .pennant-wordmark {
@@ -31,7 +34,9 @@
   line-height: 1;
   letter-spacing: -0.02em;
   color: var(--pennant-cream);
-  margin: 0 0 1.25rem;
+  margin: 0;
+  text-align: center;
+  width: fit-content;
 }
 
 .pennant-display {
@@ -49,6 +54,8 @@
   color: var(--pennant-cream);
   margin: 0;
   text-wrap: balance;
+  text-align: center;
+  width: 100%;
 }
 
 .pennant-display--light {
@@ -72,15 +79,19 @@
   font-weight: 300;
   line-height: 1.5;
   color: var(--pennant-cream);
-  margin: 1.75rem 0 0;
-  max-width: 24.625rem;
+  margin: 0;
+  max-width: 394px;
+  width: 100%;
+  text-align: center;
 }
 
 .pennant-matchup {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.35rem;
-  margin-top: 2rem;
+  margin: 0;
+  padding: 0.35rem 0.5rem;
 }
 
 .pennant-matchup__cell {

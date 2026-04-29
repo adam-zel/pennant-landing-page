@@ -10,7 +10,7 @@ describe("LandingOverlay", () => {
     expect(screen.getByText("Without")).toBeInTheDocument();
     expect(screen.getByText("The Noise.")).toBeInTheDocument();
     expect(
-      screen.getByText(/Pennant is a baseball companion for iPhone/i),
+      screen.getByText(/Pennant is your new baseball companion/i),
     ).toBeInTheDocument();
   });
 });

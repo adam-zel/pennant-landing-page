@@ -77,22 +77,39 @@ html[data-theme="night"] body {
   background-size: 220px 220px;
 }
 
-/* z=5 overlay */
+/* z=5 overlay — centered column like Paper frame L1W-0 (50% / -50% translate) */
 .pennant-overlay {
-  position: relative;
+  position: fixed;
+  inset: 0;
   z-index: 5;
   pointer-events: none;
-  min-height: 100vh;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  padding: clamp(1.25rem, 5vw, 3.5rem);
-  padding-top: clamp(4rem, 12vh, 7rem);
+  justify-content: center;
+  padding: clamp(1.25rem, 5vw, 2.5rem);
+  padding-top: clamp(3rem, 10vh, 4rem);
 }
 
 .pennant-overlay__inner {
   pointer-events: auto;
-  max-width: min(28rem, 100%);
+  width: min(394px, 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 24px;
+}
+
+/* Paper “Team Matchup Logos” frame L1X-0 */
+.pennant-matchup-shell {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 0;
+  border-radius: 4px;
+  background-color: #0f1f17;
+  border: 0.5px solid rgba(254, 250, 224, 0.12);
+  box-shadow: inset -1px 2px 2px rgba(0, 0, 0, 0.56);
 }
 
 /* z=10 theme toggle — matches reference */
