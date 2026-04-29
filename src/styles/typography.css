@@ -1,0 +1,125 @@
+/*
+  Job Clarendon Variable: add JobClarendon-Variable.woff2 under public/fonts/
+  Fraunces (index.html) is the editorial fallback until then.
+*/
+@font-face {
+  font-family: "Job Clarendon Variable";
+  src:
+    local("Job Clarendon Variable"),
+    url("/fonts/JobClarendon-Variable.woff2") format("woff2");
+  font-weight: 1 900;
+  font-stretch: 25% 50%;
+  font-display: swap;
+}
+
+.pennant-display-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12em;
+}
+
+.pennant-wordmark {
+  font-family:
+    "Job Clarendon Variable",
+    "Fraunces",
+    ui-serif,
+    Georgia,
+    serif;
+  font-variation-settings: "wght" 600, "opsz" 72;
+  font-feature-settings: "ss03", "ss04", "ss07";
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--pennant-cream);
+  margin: 0 0 1.25rem;
+}
+
+.pennant-display {
+  font-family:
+    "Job Clarendon Variable",
+    "Fraunces",
+    ui-serif,
+    Georgia,
+    serif;
+  font-feature-settings: "ss03", "ss04", "ss07";
+  text-transform: uppercase;
+  font-size: clamp(2.25rem, 10vw, 6rem);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  color: var(--pennant-cream);
+  margin: 0;
+  text-wrap: balance;
+}
+
+.pennant-display--light {
+  font-variation-settings: "wght" 300, "opsz" 72;
+}
+
+.pennant-display--semibold {
+  font-variation-settings: "wght" 600, "opsz" 72;
+}
+
+.pennant-body {
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Text",
+    "SF Pro Display",
+    system-ui,
+    "Segoe UI",
+    sans-serif;
+  font-size: clamp(0.9375rem, 2.8vw, 1rem);
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--pennant-cream);
+  margin: 1.75rem 0 0;
+  max-width: 24.625rem;
+}
+
+.pennant-matchup {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 2rem;
+}
+
+.pennant-matchup__cell {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  font-family:
+    "Job Clarendon Variable",
+    "Fraunces",
+    ui-serif,
+    Georgia,
+    serif;
+  font-variation-settings: "wght" 500, "opsz" 72;
+  font-size: clamp(1.75rem, 5vw, 2.5rem);
+  line-height: 1;
+  color: var(--pennant-cream);
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.48);
+}
+
+.pennant-matchup__divider {
+  width: 2px;
+  height: 48px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 1px;
+  overflow: hidden;
+  opacity: 0.85;
+}
+
+.pennant-matchup__divider span {
+  flex: 1;
+  width: 100%;
+}
+
+.pennant-matchup__divider span:first-child {
+  background: rgba(254, 250, 224, 0.55);
+}
+
+.pennant-matchup__divider span:last-child {
+  background: rgba(0, 0, 0, 0.35);
+}

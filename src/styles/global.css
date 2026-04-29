@@ -1,0 +1,135 @@
+:root {
+  --pennant-bg-day: #0f1f17;
+  --pennant-bg-night: #030906;
+  --pennant-cream: #fefae0;
+  --transition-theme: background-color 600ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background-color: var(--pennant-bg-day);
+  transition: var(--transition-theme);
+}
+
+html[data-theme="night"] body {
+  background-color: var(--pennant-bg-night);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* z=0 field */
+.pennant-field-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+/* z=1 vignette */
+.pennant-vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 110% 90% at 50% 35%,
+    transparent 0%,
+    transparent 65%,
+    rgba(0, 0, 0, 0.28) 100%
+  );
+}
+
+/* z=2 grain — fractalNoise SVG, 220×220 */
+.pennant-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.06;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+}
+
+/* z=5 overlay content — no pointer capture except where needed */
+.pennant-overlay {
+  position: relative;
+  z-index: 5;
+  pointer-events: none;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: clamp(1.25rem, 5vw, 3.5rem);
+  padding-top: clamp(4rem, 12vh, 7rem);
+}
+
+.pennant-overlay__inner {
+  pointer-events: auto;
+  max-width: min(28rem, 100%);
+}
+
+/* z=10 theme toggle */
+.pennant-theme-toggle {
+  position: fixed;
+  z-index: 10;
+  top: clamp(20px, 3.5vw, 36px);
+  right: clamp(20px, 3.5vw, 36px);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(254, 250, 224, 0.35);
+  background: rgba(15, 31, 23, 0.45);
+  color: var(--pennant-cream);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  backdrop-filter: blur(6px);
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+}
+
+.pennant-theme-toggle:hover {
+  background: rgba(15, 31, 23, 0.65);
+  border-color: rgba(254, 250, 224, 0.55);
+}
+
+.pennant-theme-toggle:focus-visible {
+  outline: 2px solid var(--pennant-cream);
+  outline-offset: 3px;
+}
+
+.pennant-theme-toggle:active {
+  transform: scale(0.96);
+}
+
+.pennant-theme-toggle svg {
+  width: 18px;
+  height: 18px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body {
+    transition-duration: 0.01ms;
+  }
+}
