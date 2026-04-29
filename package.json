@@ -1,5 +1,6 @@
 {
-  "name": "pennant-landing",
+  "name": "pennant-landing-page",
+  "description": "Pennant - Landing Page",
   "private": true,
   "version": "0.0.1",
   "type": "module",

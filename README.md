@@ -1,4 +1,4 @@
-# Pennant landing
+# Pennant - Landing Page
 
 Responsive React marketing page with a live WebGL baseball field (see `docs/specs/pennant-field-prompt.md`) and Paper-spec typography/copy.
 
