@@ -1,3 +1,0 @@
-# Cloudflare Pages: SPA fallback so client-side routes resolve to index.html
-# Static files in /assets/ and hashed filenames are served first.
-/*    /index.html   200

@@ -42,4 +42,4 @@ This site is a static Vite build. Use **[Cloudflare Pages](https://developers.cl
 
 Optional: install [Wrangler](https://developers.cloudflare.com/workers/wrangler/) and run `npx wrangler pages deploy dist` for manual uploads without Git.
 
-`public/_redirects` provides a SPA-style fallback so future client-side routes still serve `index.html`.
+**Wrangler / Workers Static Assets:** If your build uses `wrangler deploy` with `assets.not_found_handling: "single-page-application"`, do **not** add a catch-all `/* → /index.html` rule in `_redirects` — Cloudflare rejects it as an infinite loop. SPA fallback is already handled by that Wrangler setting.
