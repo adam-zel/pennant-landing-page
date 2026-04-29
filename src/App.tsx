@@ -21,8 +21,7 @@ export default function App() {
 
   useEffect(() => {
     const root = document.documentElement;
-    if (theme === "night") root.setAttribute("data-theme", "night");
-    else root.removeAttribute("data-theme");
+    root.setAttribute("data-theme", theme === "night" ? "night" : "day");
     try {
       localStorage.setItem(THEME_STORAGE_KEY, theme);
     } catch {

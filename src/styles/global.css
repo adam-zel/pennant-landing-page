@@ -1,8 +1,12 @@
 :root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --pennant-bg-day: #0f1f17;
   --pennant-bg-night: #030906;
   --pennant-cream: #fefae0;
-  --transition-theme: background-color 600ms cubic-bezier(0.23, 1, 0.32, 1);
+  --fg: rgba(255, 255, 255, 0.96);
+  --fg-soft: rgba(255, 255, 255, 0.78);
+  --line: rgba(255, 255, 255, 0.18);
+  --transition-theme: background-color 600ms var(--ease-out);
 }
 
 *,
@@ -23,7 +27,9 @@ body {
 
 body {
   background-color: var(--pennant-bg-day);
+  color: var(--fg);
   transition: var(--transition-theme);
+  cursor: default;
 }
 
 html[data-theme="night"] body {
@@ -34,7 +40,7 @@ html[data-theme="night"] body {
   min-height: 100vh;
 }
 
-/* z=0 field */
+/* z=0 field — matches pennant-landing.html */
 .pennant-field-canvas {
   position: fixed;
   inset: 0;
@@ -59,7 +65,7 @@ html[data-theme="night"] body {
   );
 }
 
-/* z=2 grain — fractalNoise SVG, 220×220 */
+/* z=2 grain — same SVG as reference (256², 3 octaves) */
 .pennant-grain {
   position: fixed;
   inset: 0;
@@ -67,11 +73,11 @@ html[data-theme="night"] body {
   pointer-events: none;
   opacity: 0.06;
   mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='256' height='256' filter='url(%23n)'/></svg>");
   background-size: 220px 220px;
 }
 
-/* z=5 overlay content — no pointer capture except where needed */
+/* z=5 overlay */
 .pennant-overlay {
   position: relative;
   z-index: 5;
@@ -89,7 +95,7 @@ html[data-theme="night"] body {
   max-width: min(28rem, 100%);
 }
 
-/* z=10 theme toggle */
+/* z=10 theme toggle — matches reference */
 .pennant-theme-toggle {
   position: fixed;
   z-index: 10;
@@ -97,21 +103,26 @@ html[data-theme="night"] body {
   right: clamp(20px, 3.5vw, 36px);
   width: 32px;
   height: 32px;
-  border-radius: 50%;
-  border: 1px solid rgba(254, 250, 224, 0.35);
-  background: rgba(15, 31, 23, 0.45);
-  color: var(--pennant-cream);
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--fg-soft);
   cursor: pointer;
-  display: grid;
-  place-items: center;
   padding: 0;
-  backdrop-filter: blur(6px);
-  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 200ms var(--ease-out),
+    border-color 200ms var(--ease-out),
+    transform 160ms var(--ease-out),
+    color 200ms var(--ease-out);
 }
 
 .pennant-theme-toggle:hover {
-  background: rgba(15, 31, 23, 0.65);
-  border-color: rgba(254, 250, 224, 0.55);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.32);
+  color: var(--fg);
 }
 
 .pennant-theme-toggle:focus-visible {
@@ -120,12 +131,28 @@ html[data-theme="night"] body {
 }
 
 .pennant-theme-toggle:active {
-  transform: scale(0.96);
+  transform: scale(0.92);
 }
 
 .pennant-theme-toggle svg {
-  width: 18px;
-  height: 18px;
+  width: 15px;
+  height: 15px;
+}
+
+.pennant-theme-toggle .ico-sun {
+  display: none;
+}
+
+.pennant-theme-toggle .ico-moon {
+  display: block;
+}
+
+html[data-theme="night"] .pennant-theme-toggle .ico-sun {
+  display: block;
+}
+
+html[data-theme="night"] .pennant-theme-toggle .ico-moon {
+  display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

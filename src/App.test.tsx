@@ -4,7 +4,7 @@ import App from "./App";
 
 describe("App", () => {
   afterEach(() => {
-    document.documentElement.removeAttribute("data-theme");
+    document.documentElement.setAttribute("data-theme", "day");
     localStorage.clear();
   });
 
@@ -12,8 +12,8 @@ describe("App", () => {
     render(<App />);
   });
 
-  it("defaults to day (no data-theme on html)", () => {
+  it("defaults to day on html[data-theme]", () => {
     render(<App />);
-    expect(document.documentElement.getAttribute("data-theme")).toBeNull();
+    expect(document.documentElement.getAttribute("data-theme")).toBe("day");
   });
 });

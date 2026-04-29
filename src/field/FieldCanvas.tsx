@@ -3,9 +3,8 @@ import {
   DPR_CAP,
   easeOutCubic,
   lerpNightUniform,
-  smoothMouseAxis,
-  smoothVelocityAxis,
 } from "./math";
+import { FIELD_POINTER } from "./fieldPointerConstants";
 import fragmentSource from "./shaders/fragment.glsl?raw";
 import vertexSource from "./shaders/vertex.glsl?raw";
 
@@ -53,7 +52,9 @@ export type FieldCanvasProps = {
   timeScale?: number;
 };
 
-/** Full-viewport WebGL field from `docs/specs/pennant-field-prompt.md`. */
+/**
+ * WebGL field — fragment + pointer math aligned with `pennant-landing.html`.
+ */
 export function FieldCanvas({ nightTarget, timeScale = 1 }: FieldCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const nightValRef = useRef(0);
@@ -65,9 +66,10 @@ export function FieldCanvas({ nightTarget, timeScale = 1 }: FieldCanvasProps) {
     if (!canvas) return;
     const gl = canvas.getContext("webgl", {
       alpha: false,
-      antialias: false,
+      antialias: true,
       depth: false,
       stencil: false,
+      premultipliedAlpha: false,
     });
     if (!gl) {
       if (import.meta.env.MODE !== "test") {
@@ -102,18 +104,29 @@ export function FieldCanvas({ nightTarget, timeScale = 1 }: FieldCanvasProps) {
       night: gl.getUniformLocation(program, "u_night"),
     };
 
+    nightValRef.current = propsRef.current.nightTarget;
+
     let raf = 0;
     const start = performance.now();
-    let lastFrame = start;
+    let targetMX = 0.5;
+    let targetMY = 0.5;
     let mx = 0.5;
     let my = 0.5;
-    let tmx = 0.5;
-    let tmy = 0.5;
-    let prevTmx = 0.5;
-    let prevTmy = 0.5;
+    let prevMX = 0.5;
+    let prevMY = 0.5;
     let velX = 0;
     let velY = 0;
-    let influence = 0.045;
+    let influence = 0;
+    let targetInfluence = 0;
+    let hovering = false;
+
+    const setPointer = (clientX: number, clientY: number) => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      if (w <= 0 || h <= 0) return;
+      targetMX = clientX / w;
+      targetMY = 1.0 - clientY / h;
+    };
 
     const setSize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, DPR_CAP);
@@ -129,14 +142,25 @@ export function FieldCanvas({ nightTarget, timeScale = 1 }: FieldCanvasProps) {
     setSize();
 
     const onMove = (e: PointerEvent) => {
-      const h = window.innerHeight;
-      const w = window.innerWidth;
-      if (h <= 0 || w <= 0) return;
-      tmx = e.clientX / w;
-      tmy = 1.0 - e.clientY / h;
+      hovering = true;
+      targetInfluence = 1;
+      setPointer(e.clientX, e.clientY);
+    };
+
+    const onLeave = () => {
+      hovering = false;
+      targetInfluence = 0;
+    };
+
+    const onDown = (e: PointerEvent) => {
+      hovering = true;
+      targetInfluence = 1;
+      setPointer(e.clientX, e.clientY);
     };
 
     window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointerleave", onLeave, { passive: true });
+    window.addEventListener("pointerdown", onDown, { passive: true });
     window.addEventListener("resize", setSize);
 
     const frame = (now: number) => {
@@ -144,40 +168,37 @@ export function FieldCanvas({ nightTarget, timeScale = 1 }: FieldCanvasProps) {
       const tSec = (now - start) / 1000;
       const fadeIn = Math.min(1, tSec / 0.8);
       const fadeEased = easeOutCubic(fadeIn);
-      const dt = Math.max(1e-4, (now - lastFrame) / 1000);
-      lastFrame = now;
 
-      mx = smoothMouseAxis(mx, tmx);
-      my = smoothMouseAxis(my, tmy);
+      mx += (targetMX - mx) * FIELD_POINTER.mouseLerp;
+      my += (targetMY - my) * FIELD_POINTER.mouseLerp;
 
-      const rawVX = (tmx - prevTmx) / dt;
-      const rawVY = (tmy - prevTmy) / dt;
-      prevTmx = tmx;
-      prevTmy = tmy;
+      const rawVX = mx - prevMX;
+      const rawVY = my - prevMY;
+      prevMX = mx;
+      prevMY = my;
 
       const targetMag = Math.hypot(rawVX, rawVY);
       const currMag = Math.hypot(velX, velY);
-      velX = smoothVelocityAxis(velX, rawVX, targetMag, currMag);
-      velY = smoothVelocityAxis(velY, rawVY, targetMag, currMag);
+      const velLerp =
+        targetMag > currMag
+          ? FIELD_POINTER.velLerpFast
+          : FIELD_POINTER.velLerpSlow;
+      velX += (rawVX - velX) * velLerp;
+      velY += (rawVY - velY) * velLerp;
 
-      const speed = targetMag;
-      const inflTarget = speed > 1.5 ? 0.18 : 0.045;
-      const inflK = inflTarget > influence ? 0.18 : 0.045;
-      influence += (inflTarget - influence) * inflK;
+      const inflLerp = hovering
+        ? FIELD_POINTER.enterSpeed
+        : FIELD_POINTER.settleSpeed;
+      influence += (targetInfluence - influence) * inflLerp;
 
       const { nightTarget: nt, timeScale: ts } = propsRef.current;
       nightValRef.current = lerpNightUniform(nightValRef.current, nt);
-
-      /** Scale UV/s velocity into shader-friendly displacement range */
-      const velScale = 0.0025;
-      const vx = velX * velScale;
-      const vy = velY * velScale;
 
       gl.useProgram(program);
       gl.uniform1f(u.time, tSec * ts);
       gl.uniform2f(u.resolution, canvas.width, canvas.height);
       gl.uniform2f(u.mouse, mx, my);
-      gl.uniform2f(u.mouseVel, vx, vy);
+      gl.uniform2f(u.mouseVel, velX, velY);
       gl.uniform1f(u.influence, influence);
       gl.uniform1f(u.fadeIn, fadeEased);
       gl.uniform1f(u.night, nightValRef.current);
@@ -189,6 +210,8 @@ export function FieldCanvas({ nightTarget, timeScale = 1 }: FieldCanvasProps) {
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerleave", onLeave);
+      window.removeEventListener("pointerdown", onDown);
       window.removeEventListener("resize", setSize);
       gl.deleteProgram(program);
     };

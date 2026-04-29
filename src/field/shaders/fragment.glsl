@@ -47,14 +47,14 @@ float snoise(vec2 v) {
 }
 
 float fbm(vec2 p) {
-  float f = 0.0;
-  float w = 0.5;
+  float v = 0.0;
+  float a = 0.5;
   for (int i = 0; i < 5; i++) {
-    f += w * snoise(p);
-    p *= 2.0;
-    w *= 0.5;
+    v += a * snoise(p);
+    p *= 2.02;
+    a *= 0.5;
   }
-  return f;
+  return v;
 }
 
 float sdSegment(vec2 p, vec2 a, vec2 b) {
@@ -66,10 +66,14 @@ float sdSegment(vec2 p, vec2 a, vec2 b) {
 
 void bankAccum(vec2 p, vec2 center, float fi, float u_time,
     inout float lightGlow, inout float lightStreak, inout float lightPool) {
-  float fl = 1.0 + 0.06 * sin(u_time * (1.3 + fi * 0.18) + fi * 1.7);
   vec2 d = p - center;
   float r = length(d);
-  lightGlow += (exp(-r * 90.0) * 1.00 + exp(-r * 28.0) * 0.55 + exp(-r * 10.0) * 0.32 + exp(-r * 3.5) * 0.18) * fl;
+  float fl = 1.0 + 0.06 * sin(u_time * (1.3 + fi * 0.18) + fi * 1.7);
+  float g = exp(-r * 90.0) * 1.00
+    + exp(-r * 28.0) * 0.55
+    + exp(-r * 10.0) * 0.32
+    + exp(-r * 3.5) * 0.18;
+  lightGlow += g * fl;
   vec2 ds = d * vec2(0.16, 2.6);
   lightStreak += exp(-dot(ds, ds) * 4.5) * fl;
   float vs = mix(0.45, 4.0, smoothstep(-0.05, 0.05, d.y));
@@ -79,75 +83,90 @@ void bankAccum(vec2 p, vec2 center, float fi, float u_time,
 
 void main() {
   vec2 uv = v_uv;
-  vec2 mp = u_mouse;
-  vec2 toMouse = uv - mp;
-  float falloff = smoothstep(0.30, 0.0, length(toMouse));
+  vec2 aspect = vec2(u_resolution.x / u_resolution.y, 1.0);
+  vec2 p = (uv - 0.5) * aspect;
+  vec2 mp = (u_mouse - 0.5) * aspect;
+
+  vec2 toMouse = p - mp;
+  float dist = length(toMouse);
+  float falloff = smoothstep(0.30, 0.0, dist);
   falloff *= falloff;
   falloff *= u_influence;
+
   vec2 disp = u_mouseVel * 0.95 * falloff;
   vec2 q = uv + disp;
 
-  float aspect = u_resolution.x / max(u_resolution.y, 1.0);
-  vec2 aq = q;
-  aq.x *= aspect;
-
-  float blades = fbm(q * 240.0);
-  float patches = fbm(q * 18.0 + u_time * 0.02);
+  vec2 grassP = q * 240.0;
+  vec2 patchP = q * 18.0;
+  float blades = fbm(grassP);
+  float patches = fbm(patchP + u_time * 0.02);
   float wind = snoise(q * 5.0 - u_time * 0.05);
 
-  float mowAngle = 0.7853981633974483;
-  vec2 dir = vec2(cos(mowAngle), sin(mowAngle));
-  float stripeIn = sin(dot(aq, dir) * 90.0 + patches * 1.5);
-  float mow = smoothstep(-0.4, 0.4, stripeIn);
+  float mowAngle = 3.14159 * 0.25;
+  vec2 mowAxis = vec2(cos(mowAngle), sin(mowAngle));
+  float stripe = sin(dot(q * aspect, mowAxis) * 90.0 + patches * 1.5);
+  float mow = smoothstep(-0.4, 0.4, stripe);
 
-  vec3 deepD = vec3(0.060, 0.155, 0.075);
-  vec3 midD = vec3(0.140, 0.295, 0.130);
-  vec3 brightD = vec3(0.260, 0.450, 0.180);
-  vec3 deepN = vec3(0.012, 0.052, 0.052);
-  vec3 midN = vec3(0.040, 0.135, 0.105);
-  vec3 brightN = vec3(0.135, 0.345, 0.215);
+  vec3 dayDeep = vec3(0.060, 0.155, 0.075);
+  vec3 dayMid = vec3(0.140, 0.295, 0.130);
+  vec3 dayBright = vec3(0.260, 0.450, 0.180);
+  vec3 nightDeep = vec3(0.012, 0.052, 0.052);
+  vec3 nightMid = vec3(0.040, 0.135, 0.105);
+  vec3 nightBright = vec3(0.135, 0.345, 0.215);
 
-  vec3 deep = mix(deepD, deepN, u_night);
-  vec3 mid = mix(midD, midN, u_night);
-  vec3 bright = mix(brightD, brightN, u_night);
+  vec3 dayGrass = mix(dayDeep, dayMid, smoothstep(-0.6, 0.6, blades));
+  dayGrass = mix(dayGrass, dayBright, smoothstep(0.30, 0.85, blades));
+  dayGrass *= 0.88 + mow * 0.12;
+  dayGrass *= 0.82 + (patches * 0.5 + 0.5) * 0.36;
 
-  float mowMod = mix(0.88 + mow * 0.12, 0.78 + mow * 0.24, u_night);
-  float patchMod = mix(0.82 + (patches * 0.5 + 0.5) * 0.36, 0.70 + (patches * 0.5 + 0.5) * 0.45, u_night);
+  vec3 nightGrass = mix(nightDeep, nightMid, smoothstep(-0.6, 0.6, blades));
+  nightGrass = mix(nightGrass, nightBright, smoothstep(0.30, 0.85, blades));
+  nightGrass *= 0.78 + mow * 0.24;
+  nightGrass *= 0.70 + (patches * 0.5 + 0.5) * 0.45;
 
-  vec3 gcol = mix(mix(deep, mid, blades * 0.5 + 0.5), bright, blades * 0.5 + 0.5);
-  gcol *= mowMod * patchMod;
-  gcol *= 0.97 + wind * 0.04;
+  vec3 grass = mix(dayGrass, nightGrass, u_night);
+  vec3 color = grass;
+  color *= 0.97 + wind * 0.04;
 
-  vec3 color = gcol;
-
-  vec2 p = q;
   float foulY = -0.25;
   float foulD = min(
     sdSegment(p, vec2(-2.0, foulY - 2.0), vec2(2.0, foulY + 2.0)),
     sdSegment(p, vec2(2.0, foulY - 2.0), vec2(-2.0, foulY + 2.0))
   );
   foulD += snoise(p * 75.0) * 0.0006;
-  float density = mix(0.55, 1.05, smoothstep(-0.5, 0.7, snoise(p * 7.0 + vec2(1.7, 0.4))));
-  density *= mix(0.84, 1.0, snoise(p * 150.0) * 0.5 + 0.5);
+  float patchN = snoise(p * 7.0 + vec2(1.7, 0.4));
+  float density = mix(0.55, 1.05, smoothstep(-0.5, 0.7, patchN));
+  float grain = snoise(p * 150.0) * 0.5 + 0.5;
+  density *= mix(0.84, 1.0, grain);
   float chalk = smoothstep(0.0028, 0.0010, foulD) * density;
-  vec3 chalkCol = mix(vec3(0.94, 0.92, 0.82), vec3(1.0, 1.0, 0.95), u_night);
+  vec3 chalkColor = mix(vec3(0.94, 0.92, 0.82), vec3(1.00, 1.00, 0.95), u_night);
   float chalkOp = mix(0.80, 0.92, u_night);
-  color = mix(color, chalkCol, chalk * chalkOp);
+  color = mix(color, chalkColor, chalk * chalkOp);
 
   float lightGlow = 0.0;
-  float lightStreak = 0.0;
   float lightPool = 0.0;
+  float lightStreak = 0.0;
   bankAccum(p, vec2(-0.55, 0.62), 0.0, u_time, lightGlow, lightStreak, lightPool);
   bankAccum(p, vec2(-0.18, 0.68), 1.0, u_time, lightGlow, lightStreak, lightPool);
   bankAccum(p, vec2(0.18, 0.68), 2.0, u_time, lightGlow, lightStreak, lightPool);
   bankAccum(p, vec2(0.55, 0.62), 3.0, u_time, lightGlow, lightStreak, lightPool);
   lightPool *= 0.55;
 
-  float poolTerm = lightPool * u_night * 1.70;
-  color *= mix(1.0, 0.32, u_night) + poolTerm;
-  color = mix(color, color * vec3(0.82, 0.92, 1.14), u_night * (1.0 - smoothstep(0.35, 1.0, lightPool)));
-  float spec = smoothstep(0.86, 1.0, snoise(uv * 90.0 + u_time * 0.6) * 0.5 + 0.5);
+  float ambientDim = mix(1.0, 0.32, u_night);
+  float lightLift = lightPool * u_night * 1.70;
+  color *= (ambientDim + lightLift);
+
+  vec3 coolTint = mix(
+    vec3(1.0),
+    vec3(0.82, 0.92, 1.14),
+    u_night * (1.0 - smoothstep(0.35, 1.0, lightPool))
+  );
+  color *= coolTint;
+
+  float specN = snoise(uv * 90.0 + u_time * 0.6) * 0.5 + 0.5;
+  float spec = smoothstep(0.86, 1.0, specN);
   color += spec * lightPool * u_night * 0.30 * vec3(1.04, 1.00, 0.88);
+
   vec3 lightWarm = vec3(1.14, 1.05, 0.82);
   color += lightGlow * u_night * 0.62 * lightWarm;
   color += lightStreak * u_night * 0.34 * lightWarm;
