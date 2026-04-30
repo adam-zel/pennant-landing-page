@@ -15,13 +15,21 @@ Take a **second implementation pass** on the marketing overlay so **on-page copy
 
 This plan **does not** restage the WebGL field; it focuses on `LandingOverlay` + `typography.css` (+ related meta/tests).
 
+## Implementation note (2026-04-30) — SOON strip visual authority
+
+The **shipped** matchup row follows the **approved solari / split-flap reference** (four equal columns, thin **`#1A281C`** vertical dividers, middle **O** as top/bottom glyph halves with a dark crease). That layout is implemented in [`LandingOverlay.tsx`](../../src/components/LandingOverlay.tsx) and landed via [PR #3](https://github.com/adam-zel/pennant-landing-page/pull/3).
+
+**Paper file `L1X-0`** remains the best reference for **typography tokens** (Clarendon weight, size, shadow, shell chrome) and **copy** elsewhere on the hero. Where Paper’s **node tree** (stacked **O**s + green twin verticals + horizontal double rule) **diverges** from the solari reference, **treat the reference screenshot / product sign-off as controlling** for strip geometry—not a literal Paper MCP export of divider children.
+
+See also: [docs/solutions/ui-bugs/pennant-soon-strip-solari-reference.md](../solutions/ui-bugs/pennant-soon-strip-solari-reference.md).
+
 ---
 
 ## Problem Statement / Motivation
 
 - **Design source drift:** The brainstorm still lists an older body string (“…a baseball companion for iPhone…”) while **Paper and the repo overlay** now use “…your new baseball companion…”. The **Paper file is the copy authority** for this pass (see brainstorm principle in [docs/brainstorms/2026-04-29-pennant-react-web-landing-brainstorm.md](docs/brainstorms/2026-04-29-pennant-react-web-landing-brainstorm.md) — “Paper artboard… single source of truth”) (see brainstorm: docs/brainstorms/2026-04-29-pennant-react-web-landing-brainstorm.md).
 - **Variable font parity:** Paper’s computed styles use **Job Clarendon Variable** with **`fontStretch: ultra-condensed`** and named instance weights (300 / 500 / 600); the web stack sets **`font-variation-settings`** for `wght` / `opsz` but **does not yet map `wdth`** to match ultra-condensed, which the prior plan called out as a follow-up ([docs/plans/2026-04-29-001-feat-pennant-react-web-landing-plan.md](docs/plans/2026-04-29-001-feat-pennant-react-web-landing-plan.md)).
-- **SOON row structure:** In Paper, the matchup frame (**Coming Soon** / **Team Matchup Logos**, `L1X-0`) is **not** a flat five-cell row. The **middle slot** is one **48×48** cell containing an **inner column** (positioned with a vertical offset) that stacks **O** (text) → **Double Divider** (two **horizontal** **1px** rules: `#1A281C`, `#274434`) → **O** (text). **Single dividers** elsewhere are a **row** of two **vertical** **1px** rects (`#274434`, `#1A281C`). The React overlay uses a **horizontal** five-letter map with **vertical** double dividers and **cream/black** divider fills — **orthogonal** to Paper on both center layout and divider geometry (see [2026-04-30 Coming Soon brainstorm](../brainstorms/2026-04-30-coming-soon-paper-parity-brainstorm.md)).
+- **SOON row structure:** ~~Prior draft~~ targeted Paper **`L1X-0`** nested dividers vs web. **Shipped (2026-04-30):** solari **four-column** strip — **S | O | split-flap O | N** with thin vertical rules; middle **O** is two clipped halves + crease (**not** Paper’s green horizontal pair). Paper still informs **type** on letters and **shell** styling where aligned.
 - **Marketing vs DOM:** `index.html` meta/OG strings **differ** from `BODY_COPY` (shorter, “iPhone” framing). Crawlers and social previews will not match the hero paragraph unless explicitly reconciled.
 
 ---
@@ -53,11 +61,10 @@ This plan **does not** restage the WebGL field; it focuses on `LandingOverlay` +
 2. **Variable typography**
    - Extend Clarendon rules in [`src/styles/typography.css`](src/styles/typography.css) with **`font-variation-settings` / `wdth`** (or `font-stretch`) aligned to Paper’s **ultra-condensed** for wordmark, display, and matchup cells — verify against [`@font-face`](src/styles/typography.css) axis range.
    - Body: Prefer **SF Pro** weight **274** where the stack supports it (e.g. `font-variation-settings: "wght" 274` on Apple system faces if effective in target browsers); document fallback to **300** for stacks where 274 is unavailable.
-3. **SOON / matchup row (full structural parity — 2026-04-30)**
-   - Refactor [`LandingOverlay.tsx`](src/components/LandingOverlay.tsx) to **four horizontal slots**: **`S`**, **`O`**, **middle column group** (stacked **`O` / double horizontal divider / `O`** inside one letter-width slot), **`N`**, with **single** dividers **between** slots matching Paper (`Divider Light` **#274434** + `Divider Dark` **#1A281C**, vertical pair).
-   - Implement **double divider** as Paper does: **column** of two **horizontal** **1px** bars (**#1A281C** top, **#274434** bottom), not side-by-side vertical strips.
-   - Mirror Paper shell on `.pennant-matchup-shell` (already close); reconcile **inner padding/gap** after structure lands — Paper’s `L1X-0` has **no padding** on the outer frame.
-   - Preserve **`aria-hidden`** on the decorative strip; spelling still reads **SOON**.
+3. **SOON / matchup row (shipped — solari reference, 2026-04-30)**
+   - [`LandingOverlay.tsx`](src/components/LandingOverlay.tsx): **four** horizontal slots **`S`**, **`O`**, **solari middle** (split-flap **O**), **`N`**; **three** thin vertical **`#1A281C`** dividers; document **decorative** `aria-hidden` intent in JSX comment.
+   - [`typography.css`](src/styles/typography.css): shared letter styles on cells + solari halves; **no** Paper green twin-divider strip (superseded by product reference).
+   - Shell / padding: **no** inner padding on `.pennant-matchup`; shell matches dark chip + inset shadow.
 4. **SEO / social**
    - Decide single marketing message: either **align** `meta`/`og:*` with the hero paragraph, or **document intentional shortening** and align terminology (“iPhone” vs “new companion”) with product. Update [`index.html`](index.html) accordingly.
 
@@ -90,7 +97,7 @@ flowchart LR
   React -->|user-visible| User[Visitor]
 ```
 
-- **Integration tests:** After matchup markup changes, update [`LandingOverlay.test.tsx`](src/components/LandingOverlay.test.tsx) for the **new DOM shape** (expect **SOON** reading order, **three** single-divider regions, **one** middle column with **horizontal** double rule — avoid coupling tests to “five `.pennant-matchup__cell` siblings” if that class model changes).
+- **Integration tests:** [`LandingOverlay.test.tsx`](src/components/LandingOverlay.test.tsx) asserts **three** `.pennant-matchup__cell` texts **S/O/N**, **scoped** strip queries, **two** solari halves each **`O`**, **three** dividers + crease **`aria-hidden`**, and shell **`aria-hidden`** (see PR #3 + [todo CE-REV-PR3-006](../../todos/006-pending-p2-pr3-tests-and-a11y-hardening.md)).
 
 ---
 
@@ -99,7 +106,7 @@ flowchart LR
 - [ ] **Body paragraph** in the DOM matches **Paper `L2K-0`** verbatim (currently already true — re-verify after any Paper edit).
 - [ ] **Wordmark + display + matchup** use Clarendon **variable** settings that include **width/condensed** behavior consistent with Paper (`ultra-condensed` / `wdth` in documented range).
 - [ ] **Body** weight matches Paper intent (**274** with documented fallback), not only generic `300`.
-- [ ] **Matchup row** matches Paper **`L1X-0`**: **middle slot** = vertical stack of two **`O`** glyphs with **horizontal** double divider (**#1A281C** / **#274434**); **single** dividers = **two vertical** **1px** greens side-by-side; divider fills **do not** use cream/black rgba stand-ins; optional screenshot vs Paper after `get_computed_styles` pass.
+- [x] **Matchup row** — **Solari reference (PR #3):** four columns **S | O | split-flap O | N**; **three** thin vertical **`#1A281C`** dividers; middle **O** = two half-height flex regions + dark crease; decorative strip + dividers + crease use **`aria-hidden`** per JSX comment; re-open if Paper or marketing supersedes this visual contract.
 - [ ] **`index.html`** `<title>`, `description`, `og:title`, `og:description` follow an **explicit** policy (same prose as hero, shortened variant with rationale, or build-time single source).
 - [ ] **Tests** updated: body substring; optional structural test for matchup **S-O-O-O-N** and **center divider** variant.
 - [ ] **Brainstorm / docs:** Note that body copy in the old table is **superseded** by Paper (see brainstorm: docs/brainstorms/2026-04-29-pennant-react-web-landing-brainstorm.md) or refresh that row.
@@ -119,14 +126,14 @@ flowchart LR
 |------|------------|
 | `wdth` values differ by build of Job Clarendon | Compare `get_font_family_info` + Paper export; tune once, document in CSS comment |
 | SF Pro 274 not available on all platforms | Acceptable fallback per brainstorm (see brainstorm: docs/brainstorms/2026-04-29-pennant-react-web-landing-brainstorm.md) |
-| Double divider mis-implemented | Pull computed styles for Paper divider nodes; screenshot diff |
+| Strip layout vs Paper tree diverge | Document **solari** as controlling (see Implementation note + [pennant-soon-strip-solari-reference.md](../solutions/ui-bugs/pennant-soon-strip-solari-reference.md)); re-sync if design picks literal **`L1X-0`** again |
 
 ---
 
 ## Research & external docs
 
 - **Local research:** Repo overlay, typography, tests, meta — consolidated above.
-- **`docs/solutions/`:** [ui-bugs/pennant-landing-ce-review-remediation.md](../solutions/ui-bugs/pennant-landing-ce-review-remediation.md) — responsive matchup/hero clamps, Clarendon `wdth` tokens, `<main>` landmark.
+- **`docs/solutions/`:** [ui-bugs/pennant-landing-ce-review-remediation.md](../solutions/ui-bugs/pennant-landing-ce-review-remediation.md) — responsive matchup/hero clamps, Clarendon `wdth` tokens, `<main>` landmark; [ui-bugs/pennant-soon-strip-solari-reference.md](../solutions/ui-bugs/pennant-soon-strip-solari-reference.md) — SOON strip design authority (solari vs Paper).
 - **External framework docs:** **Skipped** — implementation is CSS/React-only; Paper MCP + existing plan provide sufficient grounding.
 
 ---
@@ -137,5 +144,5 @@ flowchart LR
 - **Prior plan:** [docs/plans/2026-04-29-001-feat-pennant-react-web-landing-plan.md](docs/plans/2026-04-29-001-feat-pennant-react-web-landing-plan.md) (R2/R3 trace).
 - **Code:** [`src/components/LandingOverlay.tsx`](src/components/LandingOverlay.tsx), [`src/styles/typography.css`](src/styles/typography.css), [`src/styles/global.css`](src/styles/global.css), [`index.html`](index.html), [`src/components/LandingOverlay.test.tsx`](src/components/LandingOverlay.test.tsx).
 - **Paper MCP (session):** File **Pennant**, page **Landing Page**; hero column **`L1W-0`**; matchup / **Coming Soon** frame **`L1X-0`** (computed styles for shell, letter wrappers, `L29-0`/`L25-0`, single divider rects **`L32-0`/`L31-0`**, double divider rects **`L28-0`/`L27-0`**). Prior pulls: `L2P-0`, `L2O-0`–`L2M-0`, `L2K-0`, `L2J-0`, letter nodes as cited above.
-- **Coming Soon parity brainstorm:** [docs/brainstorms/2026-04-30-coming-soon-paper-parity-brainstorm.md](../brainstorms/2026-04-30-coming-soon-paper-parity-brainstorm.md) — fidelity decision (**full structural parity**) and execution-doc consolidation (**this plan**).
+- **Coming Soon parity brainstorm:** [docs/brainstorms/2026-04-30-coming-soon-paper-parity-brainstorm.md](../brainstorms/2026-04-30-coming-soon-paper-parity-brainstorm.md) — Paper **`L1X-0`** notes + **Implementation update** (solari reference supersedes strip layout row).
 - **Implementation playbook:** [docs/plans/2026-04-30-002-feat-pennant-paper-parity-implementation-playbook-plan.md](2026-04-30-002-feat-pennant-paper-parity-implementation-playbook-plan.md) — phased work order, SpecFlow edge cases, test reminders (**acceptance criteria stay in this file**).
