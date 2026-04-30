@@ -120,14 +120,12 @@
   gap: 0;
   margin: 0;
   padding: 0;
-  overflow: visible;
+  overflow: hidden;
 }
 
-.pennant-matchup__cell {
-  width: var(--matchup-cell);
-  height: var(--matchup-cell);
-  display: grid;
-  place-items: center;
+/* Shared letter styling: static cells + solari halves */
+.pennant-matchup__cell,
+.pennant-matchup__solari-half {
   font-family:
     "Job Clarendon Variable",
     "Fraunces",
@@ -143,85 +141,52 @@
   line-height: 1;
   color: var(--pennant-cream);
   text-shadow: 0 2px 3px rgba(0, 0, 0, 0.48);
+}
+
+.pennant-matchup__cell {
+  width: var(--matchup-cell);
+  height: var(--matchup-cell);
+  display: grid;
+  place-items: center;
   flex-shrink: 0;
 }
 
-/* Middle “OO” column: Paper `L23-0` / `L24-0` — inner stack offset upward */
-.pennant-matchup__middle {
-  position: relative;
+/* Split-flap second “O”: four-column solari reference */
+.pennant-matchup__solari {
   width: var(--matchup-cell);
   height: var(--matchup-cell);
   flex-shrink: 0;
-  overflow: visible;
-}
-
-.pennant-matchup__middle-inner {
-  position: absolute;
-  left: 0;
-  top: calc(var(--matchup-cell) * -27.5 / 48);
-  width: var(--matchup-cell);
-  height: calc(var(--matchup-cell) * 49 / 48);
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-  justify-content: flex-start;
-  box-sizing: border-box;
+  overflow: hidden;
 }
 
-.pennant-matchup__cell--stacked {
-  width: 100%;
-  height: auto;
+.pennant-matchup__solari-half {
   flex: 1 1 0;
   min-height: 0;
+  overflow: hidden;
   display: flex;
-  align-items: center;
   justify-content: center;
 }
 
-/* Single divider: row of two vertical 1px bars (Paper `L30-0` / `L32-0` + `L31-0`) */
-.pennant-matchup__divider-vertical {
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
-  align-self: stretch;
-  width: 2px;
-  flex-shrink: 0;
+.pennant-matchup__solari-half--top {
+  align-items: flex-end;
 }
 
-.pennant-matchup__divider-vertical__bar {
+.pennant-matchup__solari-half--bottom {
+  align-items: flex-start;
+}
+
+.pennant-matchup__solari-crease {
+  flex: 0 0 1px;
+  flex-shrink: 0;
+  background-color: rgba(0, 0, 0, 0.42);
+}
+
+/* Thin vertical slot dividers */
+.pennant-matchup__divider {
   width: 1px;
   flex-shrink: 0;
   align-self: stretch;
-}
-
-.pennant-matchup__divider-vertical__bar--light {
-  background-color: #274434;
-}
-
-.pennant-matchup__divider-vertical__bar--dark {
   background-color: #1a281c;
-}
-
-/* Double divider: column of two horizontal 1px bars (Paper `L26-0` / `L28-0` + `L27-0`) */
-.pennant-matchup__divider-horizontal {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  align-self: stretch;
-  flex-shrink: 0;
-  width: 100%;
-}
-
-.pennant-matchup__divider-horizontal__bar {
-  height: 1px;
-  flex-shrink: 0;
-  align-self: stretch;
-}
-
-.pennant-matchup__divider-horizontal__bar--top {
-  background-color: #1a281c;
-}
-
-.pennant-matchup__divider-horizontal__bar--bottom {
-  background-color: #274434;
 }

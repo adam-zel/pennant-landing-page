@@ -1,26 +1,25 @@
 import { HERO_BODY_COPY } from "../siteCopy";
 import "../styles/typography.css";
 
-/** Paper “Coming Soon” strip — reads “SOON”; middle slot stacks two O’s (see Paper `L1X-0`). */
-function MatchupDividerSingle() {
-  return (
-    <div className="pennant-matchup__divider-vertical" aria-hidden>
-      <span className="pennant-matchup__divider-vertical__bar pennant-matchup__divider-vertical__bar--light" />
-      <span className="pennant-matchup__divider-vertical__bar pennant-matchup__divider-vertical__bar--dark" />
-    </div>
-  );
+/** Thin vertical rule between solari columns (reference: dark line, not bright twin stripes). */
+function MatchupDivider() {
+  return <div className="pennant-matchup__divider" aria-hidden />;
 }
 
-/** Paper double divider: two horizontal 1px rules (#1A281C over #274434). */
-function MatchupDividerDouble() {
+/**
+ * Second “O” as a split-flap / solari panel: bottom of glyph in top half, top of glyph
+ * in bottom half, dark gap + crease between — matches design reference (four equal columns).
+ */
+function MatchupSolariO() {
   return (
-    <div
-      className="pennant-matchup__divider-horizontal"
-      data-testid="matchup-double-divider"
-      aria-hidden
-    >
-      <span className="pennant-matchup__divider-horizontal__bar pennant-matchup__divider-horizontal__bar--top" />
-      <span className="pennant-matchup__divider-horizontal__bar pennant-matchup__divider-horizontal__bar--bottom" />
+    <div className="pennant-matchup__solari" data-testid="matchup-solari-o">
+      <div className="pennant-matchup__solari-half pennant-matchup__solari-half--top">
+        O
+      </div>
+      <div className="pennant-matchup__solari-crease" aria-hidden />
+      <div className="pennant-matchup__solari-half pennant-matchup__solari-half--bottom">
+        O
+      </div>
     </div>
   );
 }
@@ -43,24 +42,11 @@ export function LandingOverlay() {
         <div className="pennant-matchup-shell" aria-hidden>
           <div className="pennant-matchup">
             <div className="pennant-matchup__cell">S</div>
-            <MatchupDividerSingle />
+            <MatchupDivider />
             <div className="pennant-matchup__cell">O</div>
-            <MatchupDividerSingle />
-            <div
-              className="pennant-matchup__middle"
-              data-testid="matchup-middle-column"
-            >
-              <div className="pennant-matchup__middle-inner">
-                <div className="pennant-matchup__cell pennant-matchup__cell--stacked">
-                  O
-                </div>
-                <MatchupDividerDouble />
-                <div className="pennant-matchup__cell pennant-matchup__cell--stacked">
-                  O
-                </div>
-              </div>
-            </div>
-            <MatchupDividerSingle />
+            <MatchupDivider />
+            <MatchupSolariO />
+            <MatchupDivider />
             <div className="pennant-matchup__cell">N</div>
           </div>
         </div>
