@@ -1,11 +1,33 @@
 import { Fragment } from "react";
+import { HERO_BODY_COPY } from "../siteCopy";
 import "../styles/typography.css";
 
-const BODY_COPY =
-  "Pennant is your new baseball companion. Pick your team once. Open it every day. It tells you what's happening, who's playing, and where your team stands.";
-
-/** Paper “Team Matchup” row — letter placeholders until real marks ship. */
+/** Paper “Team Matchup” row — letter placeholders until real marks ship (reads “SOON”). */
 const MATCHUP = ["S", "O", "O", "O", "N"] as const;
+
+function MatchupDivider({ variant }: { variant: "single" | "double" }) {
+  const column = (
+    <div className="pennant-matchup__divider" aria-hidden>
+      <span />
+      <span />
+    </div>
+  );
+
+  if (variant === "double") {
+    return (
+      <div
+        className="pennant-matchup__divider--double"
+        data-testid="matchup-double-divider"
+        aria-hidden
+      >
+        {column}
+        {column}
+      </div>
+    );
+  }
+
+  return column;
+}
 
 export function LandingOverlay() {
   return (
@@ -21,16 +43,15 @@ export function LandingOverlay() {
             The Noise.
           </span>
         </h1>
-        <p className="pennant-body">{BODY_COPY}</p>
+        <p className="pennant-body">{HERO_BODY_COPY}</p>
         <div className="pennant-matchup-shell" aria-hidden>
           <div className="pennant-matchup">
             {MATCHUP.map((ch, i) => (
               <Fragment key={`${ch}-${i}`}>
                 {i > 0 ? (
-                  <div className="pennant-matchup__divider">
-                    <span />
-                    <span />
-                  </div>
+                  <MatchupDivider
+                    variant={i === 3 ? "double" : "single"}
+                  />
                 ) : null}
                 <div className="pennant-matchup__cell">{ch}</div>
               </Fragment>

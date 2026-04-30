@@ -1,15 +1,20 @@
 /*
-  Job Clarendon Variable: add JobClarendon-Variable.woff2 under public/fonts/
-  Fraunces (index.html) is the editorial fallback until then.
+  Job Clarendon Variable (wdth, wght): shipped as JobClarendonVariable-Testing.ttf in public/fonts/.
+  Fraunces (index.html) is the editorial fallback when local/embedded face is unavailable.
+  Paper uses ultra-condensed width; wdth ~35 tracks the design brief range (25–50).
 */
 @font-face {
   font-family: "Job Clarendon Variable";
   src:
     local("Job Clarendon Variable"),
-    url("/fonts/JobClarendon-Variable.woff2") format("woff2");
-  font-weight: 1 900;
-  font-stretch: 25% 50%;
+    url("/fonts/JobClarendonVariable-Testing.ttf") format("truetype");
+  font-weight: 100 900;
+  font-stretch: 50% 200%;
   font-display: swap;
+}
+
+:root {
+  --pennant-clarendon-wdth: 35;
 }
 
 .pennant-display-stack {
@@ -28,7 +33,11 @@
     ui-serif,
     Georgia,
     serif;
-  font-variation-settings: "wght" 600, "opsz" 72;
+  font-stretch: ultra-condensed;
+  font-variation-settings:
+    "wght" 600,
+    "opsz" 72,
+    "wdth" var(--pennant-clarendon-wdth);
   font-feature-settings: "ss03", "ss04", "ss07";
   font-size: clamp(1.5rem, 4vw, 2rem);
   line-height: 1;
@@ -46,6 +55,7 @@
     ui-serif,
     Georgia,
     serif;
+  font-stretch: ultra-condensed;
   font-feature-settings: "ss03", "ss04", "ss07";
   text-transform: uppercase;
   font-size: clamp(2.25rem, 10vw, 6rem);
@@ -59,11 +69,17 @@
 }
 
 .pennant-display--light {
-  font-variation-settings: "wght" 300, "opsz" 72;
+  font-variation-settings:
+    "wght" 300,
+    "opsz" 72,
+    "wdth" var(--pennant-clarendon-wdth);
 }
 
 .pennant-display--semibold {
-  font-variation-settings: "wght" 600, "opsz" 72;
+  font-variation-settings:
+    "wght" 600,
+    "opsz" 72,
+    "wdth" var(--pennant-clarendon-wdth);
 }
 
 .pennant-body {
@@ -76,7 +92,9 @@
     "Segoe UI",
     sans-serif;
   font-size: clamp(0.9375rem, 2.8vw, 1rem);
+  /* Paper ~274 Light; stacks without SF variable axes fall back to 300 */
   font-weight: 300;
+  font-variation-settings: "wght" 274, "opsz" 17;
   line-height: 1.5;
   color: var(--pennant-cream);
   margin: 0;
@@ -105,13 +123,18 @@
     ui-serif,
     Georgia,
     serif;
-  font-variation-settings: "wght" 500, "opsz" 72;
+  font-stretch: ultra-condensed;
+  font-variation-settings:
+    "wght" 500,
+    "opsz" 72,
+    "wdth" var(--pennant-clarendon-wdth);
   font-size: clamp(1.75rem, 5vw, 2.5rem);
   line-height: 1;
   color: var(--pennant-cream);
   text-shadow: 0 2px 3px rgba(0, 0, 0, 0.48);
 }
 
+/* Single column: light top / dark bottom (Paper “Divider”) */
 .pennant-matchup__divider {
   width: 2px;
   height: 48px;
@@ -120,6 +143,23 @@
   border-radius: 1px;
   overflow: hidden;
   opacity: 0.85;
+  flex-shrink: 0;
+}
+
+/* Paper “Double Divider” between the two center O glyphs: two columns */
+.pennant-matchup__divider--double {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 3px;
+  width: auto;
+  height: 48px;
+  opacity: 0.85;
+  flex-shrink: 0;
+}
+
+.pennant-matchup__divider--double .pennant-matchup__divider {
+  height: 100%;
 }
 
 .pennant-matchup__divider span {

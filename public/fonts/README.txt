@@ -1,4 +1,5 @@
-Add licensed Job Clarendon Variable files here, e.g. JobClarendon-Variable.woff2
+Job Clarendon Variable is loaded from `JobClarendonVariable-Testing.ttf` (see `src/styles/typography.css` @font-face).
 
-The app uses @font-face "Job Clarendon Variable" pointing at /fonts/JobClarendon-Variable.woff2.
-Until that file exists, Fraunces (loaded from Google Fonts in index.html) supplies the display fallback.
+Replace that file with your licensed production build when ready; keep the same filename or update the `url()` in typography.css.
+
+Fraunces (Google Fonts in index.html) remains the display fallback.

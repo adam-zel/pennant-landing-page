@@ -19,7 +19,7 @@ A **React** (web) **marketing landing** for Pennant (baseball companion for iPho
 |------|------|
 | Wordmark | `Pennant` |
 | Display lines (uppercase in design) | `Baseball` · `Without` · `The Noise.` |
-| Supporting paragraph | `Pennant is a baseball companion for iPhone. Pick your team once. Open it every day. It tells you what's happening, who's playing, and where your team stands.` |
+| Supporting paragraph | `Pennant is your new baseball companion. Pick your team once. Open it every day. It tells you what's happening, who's playing, and where your team stands.` *(Paper / `src/siteCopy.ts` — supersedes earlier “for iPhone” draft.)* |
 | Team matchup row | Placeholder letterforms in design: `S`, `O`, `O`, `O`, `N` (treat as **visual placeholders** until real assets or team data exist). |
 
 ### Color (from computed styles)
