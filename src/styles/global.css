@@ -103,7 +103,7 @@ html[data-theme="night"] body {
   flex-shrink: 0;
 }
 
-/* Paper “Team Matchup Logos” frame L1X-0 */
+/* Paper “Coming Soon” / matchup frame — allow vertically offset center column */
 .pennant-matchup-shell {
   display: flex;
   justify-content: flex-start;
@@ -113,6 +113,7 @@ html[data-theme="night"] body {
   background-color: #0f1f17;
   border: 0.5px solid rgba(254, 250, 224, 0.12);
   box-shadow: inset -1px 2px 2px rgba(0, 0, 0, 0.56);
+  overflow: visible;
 }
 
 /* z=10 theme toggle — matches reference */
