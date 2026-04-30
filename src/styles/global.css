@@ -95,15 +95,15 @@ html[data-theme="night"] body {
   width: min(394px, 100%);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
+  align-items: flex-start;
+  text-align: left;
   gap: 24px;
 }
 
 /* Paper “Team Matchup Logos” frame L1X-0 */
 .pennant-matchup-shell {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   width: 100%;
   padding: 0;
   border-radius: 4px;

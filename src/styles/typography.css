@@ -20,10 +20,10 @@
 .pennant-display-stack {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.12em;
   width: 100%;
-  text-align: center;
+  text-align: left;
 }
 
 .pennant-wordmark {
@@ -37,14 +37,14 @@
   font-variation-settings:
     "wght" 600,
     "opsz" 72,
-    "wdth" var(--pennant-clarendon-wdth);
+    "wdth" 50;
   font-feature-settings: "ss03", "ss04", "ss07";
-  font-size: clamp(1.5rem, 4vw, 2rem);
-  line-height: 1;
+  font-size: 32px;
+  line-height: 32px;
   letter-spacing: -0.02em;
   color: var(--pennant-cream);
   margin: 0;
-  text-align: center;
+  text-align: left;
   width: fit-content;
 }
 
@@ -58,13 +58,13 @@
   font-stretch: ultra-condensed;
   font-feature-settings: "ss03", "ss04", "ss07";
   text-transform: uppercase;
-  font-size: clamp(2.25rem, 10vw, 6rem);
-  line-height: 0.92;
+  font-size: 96px;
+  line-height: 88px;
   letter-spacing: -0.03em;
   color: var(--pennant-cream);
   margin: 0;
   text-wrap: balance;
-  text-align: center;
+  text-align: left;
   width: 100%;
 }
 
@@ -72,14 +72,14 @@
   font-variation-settings:
     "wght" 300,
     "opsz" 72,
-    "wdth" var(--pennant-clarendon-wdth);
+    "wdth" 50;
 }
 
 .pennant-display--semibold {
   font-variation-settings:
     "wght" 600,
     "opsz" 72,
-    "wdth" var(--pennant-clarendon-wdth);
+    "wdth" 50;
 }
 
 .pennant-body {
@@ -100,13 +100,13 @@
   margin: 0;
   max-width: 394px;
   width: 100%;
-  text-align: center;
+  text-align: left;
 }
 
 .pennant-matchup {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 0.35rem;
   margin: 0;
   padding: 0.35rem 0.5rem;
