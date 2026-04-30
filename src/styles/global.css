@@ -77,7 +77,7 @@ html[data-theme="night"] body {
   background-size: 220px 220px;
 }
 
-/* z=5 overlay — centered column like Paper frame L1W-0 (50% / -50% translate) */
+/* z=5 overlay — flex-centered hero column; scrolls when content exceeds viewport */
 .pennant-overlay {
   position: fixed;
   inset: 0;
@@ -88,6 +88,8 @@ html[data-theme="night"] body {
   justify-content: center;
   padding: clamp(1.25rem, 5vw, 2.5rem);
   padding-top: clamp(3rem, 10vh, 4rem);
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .pennant-overlay__inner {
@@ -98,6 +100,7 @@ html[data-theme="night"] body {
   align-items: flex-start;
   text-align: left;
   gap: 24px;
+  flex-shrink: 0;
 }
 
 /* Paper “Team Matchup Logos” frame L1X-0 */

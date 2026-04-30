@@ -31,7 +31,7 @@ function MatchupDivider({ variant }: { variant: "single" | "double" }) {
 
 export function LandingOverlay() {
   return (
-    <div className="pennant-overlay">
+    <main className="pennant-overlay">
       <div className="pennant-overlay__inner">
         <p className="pennant-wordmark">Pennant</p>
         <h1 className="pennant-display-stack">
@@ -59,6 +59,6 @@ export function LandingOverlay() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

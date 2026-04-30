@@ -6,6 +6,7 @@ import { LandingOverlay } from "./LandingOverlay";
 describe("LandingOverlay", () => {
   it("renders Paper copy", () => {
     render(<LandingOverlay />);
+    expect(screen.getByRole("main")).toBeInTheDocument();
     expect(screen.getByText("Pennant")).toBeInTheDocument();
     expect(screen.getByText("Baseball")).toBeInTheDocument();
     expect(screen.getByText("Without")).toBeInTheDocument();

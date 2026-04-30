@@ -1,7 +1,7 @@
 /*
   Job Clarendon Variable (wdth, wght): shipped as JobClarendonVariable-Testing.ttf in public/fonts/.
   Fraunces (index.html) is the editorial fallback when local/embedded face is unavailable.
-  Paper uses ultra-condensed width; wdth ~35 tracks the design brief range (25–50).
+  Hero wordmark/display use wdth 50; matchup row stays narrower (wdth 35) via tokens below.
 */
 @font-face {
   font-family: "Job Clarendon Variable";
@@ -14,14 +14,20 @@
 }
 
 :root {
-  --pennant-clarendon-wdth: 35;
+  --pennant-clarendon-wdth-hero: 50;
+  --pennant-clarendon-wdth-matchup: 35;
 }
 
 .pennant-display-stack {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.12em;
+  /* h1 reset — spacing matches ~0.12em at 96px display size */
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: 1;
+  gap: 0.72rem;
   width: 100%;
   text-align: left;
 }
@@ -37,10 +43,10 @@
   font-variation-settings:
     "wght" 600,
     "opsz" 72,
-    "wdth" 50;
+    "wdth" var(--pennant-clarendon-wdth-hero);
   font-feature-settings: "ss03", "ss04", "ss07";
-  font-size: 32px;
-  line-height: 32px;
+  font-size: clamp(1rem, 2vw + 0.75rem, 2rem);
+  line-height: 1;
   letter-spacing: -0.02em;
   color: var(--pennant-cream);
   margin: 0;
@@ -58,8 +64,8 @@
   font-stretch: ultra-condensed;
   font-feature-settings: "ss03", "ss04", "ss07";
   text-transform: uppercase;
-  font-size: 96px;
-  line-height: 88px;
+  font-size: clamp(2rem, 5vw + 2rem, 6rem);
+  line-height: 0.917;
   letter-spacing: -0.03em;
   color: var(--pennant-cream);
   margin: 0;
@@ -72,14 +78,14 @@
   font-variation-settings:
     "wght" 300,
     "opsz" 72,
-    "wdth" 50;
+    "wdth" var(--pennant-clarendon-wdth-hero);
 }
 
 .pennant-display--semibold {
   font-variation-settings:
     "wght" 600,
     "opsz" 72,
-    "wdth" 50;
+    "wdth" var(--pennant-clarendon-wdth-hero);
 }
 
 .pennant-body {
@@ -104,6 +110,7 @@
 }
 
 .pennant-matchup {
+  --matchup-cell: clamp(36px, 10vw, 48px);
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -113,8 +120,8 @@
 }
 
 .pennant-matchup__cell {
-  width: 48px;
-  height: 48px;
+  width: var(--matchup-cell);
+  height: var(--matchup-cell);
   display: grid;
   place-items: center;
   font-family:
@@ -127,7 +134,7 @@
   font-variation-settings:
     "wght" 500,
     "opsz" 72,
-    "wdth" var(--pennant-clarendon-wdth);
+    "wdth" var(--pennant-clarendon-wdth-matchup);
   font-size: clamp(1.75rem, 5vw, 2.5rem);
   line-height: 1;
   color: var(--pennant-cream);
@@ -137,7 +144,7 @@
 /* Single column: light top / dark bottom (Paper “Divider”) */
 .pennant-matchup__divider {
   width: 2px;
-  height: 48px;
+  height: var(--matchup-cell);
   display: flex;
   flex-direction: column;
   border-radius: 1px;
@@ -153,7 +160,7 @@
   align-items: stretch;
   gap: 3px;
   width: auto;
-  height: 48px;
+  height: var(--matchup-cell);
   opacity: 0.85;
   flex-shrink: 0;
 }
