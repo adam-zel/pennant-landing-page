@@ -16,9 +16,9 @@ describe("LandingOverlay", () => {
 
   it("renders SOON matchup letters in order", () => {
     const { container } = render(<LandingOverlay />);
-    const cells = container.querySelectorAll(".pennant-matchup__cell");
-    expect(cells).toHaveLength(5);
-    expect([...cells].map((el) => el.textContent)).toEqual([
+    const letters = container.querySelectorAll(".pennant-matchup__cell");
+    expect(letters).toHaveLength(5);
+    expect([...letters].map((el) => el.textContent?.trim())).toEqual([
       "S",
       "O",
       "O",
@@ -27,11 +27,19 @@ describe("LandingOverlay", () => {
     ]);
   });
 
-  it("uses a double divider before the third O (Paper center pair)", () => {
+  it("uses Paper middle column with horizontal double divider", () => {
     render(<LandingOverlay />);
-    expect(screen.getByTestId("matchup-double-divider")).toBeInTheDocument();
-    expect(screen.getByTestId("matchup-double-divider").children).toHaveLength(
-      2,
-    );
+    expect(screen.getByTestId("matchup-middle-column")).toBeInTheDocument();
+    const double = screen.getByTestId("matchup-double-divider");
+    expect(double.children).toHaveLength(2);
+    expect(
+      document.querySelectorAll(".pennant-matchup__divider-vertical"),
+    ).toHaveLength(3);
+  });
+
+  it("hides decorative matchup strip from accessibility tree", () => {
+    const { container } = render(<LandingOverlay />);
+    const shell = container.querySelector(".pennant-matchup-shell");
+    expect(shell).toHaveAttribute("aria-hidden", "true");
   });
 });
