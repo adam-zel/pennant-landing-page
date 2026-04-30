@@ -14,27 +14,28 @@ describe("LandingOverlay", () => {
     expect(screen.getByText(HERO_BODY_COPY)).toBeInTheDocument();
   });
 
-  it("renders SOON matchup letters in order", () => {
+  it("renders S, O, N cells plus solari middle (reads visually as SOON)", () => {
     const { container } = render(<LandingOverlay />);
-    const letters = container.querySelectorAll(".pennant-matchup__cell");
-    expect(letters).toHaveLength(5);
-    expect([...letters].map((el) => el.textContent?.trim())).toEqual([
-      "S",
-      "O",
-      "O",
-      "O",
-      "N",
-    ]);
+    const strip = container.querySelector(".pennant-matchup");
+    const cells = [...strip!.querySelectorAll(".pennant-matchup__cell")].map(
+      (el) => el.textContent?.trim(),
+    );
+    expect(cells).toEqual(["S", "O", "N"]);
+    expect(strip?.querySelectorAll(".pennant-matchup__cell")).toHaveLength(3);
   });
 
-  it("uses Paper middle column with horizontal double divider", () => {
+  it("uses solari split-flap middle for the second O", () => {
     render(<LandingOverlay />);
-    expect(screen.getByTestId("matchup-middle-column")).toBeInTheDocument();
-    const double = screen.getByTestId("matchup-double-divider");
-    expect(double.children).toHaveLength(2);
+    expect(screen.getByTestId("matchup-solari-o")).toBeInTheDocument();
+    expect(document.querySelectorAll(".pennant-matchup__solari-half")).toHaveLength(
+      2,
+    );
     expect(
-      document.querySelectorAll(".pennant-matchup__divider-vertical"),
-    ).toHaveLength(3);
+      document.querySelector(".pennant-matchup__solari-crease"),
+    ).toBeInTheDocument();
+    expect(document.querySelectorAll(".pennant-matchup__divider")).toHaveLength(
+      3,
+    );
   });
 
   it("hides decorative matchup strip from accessibility tree", () => {
