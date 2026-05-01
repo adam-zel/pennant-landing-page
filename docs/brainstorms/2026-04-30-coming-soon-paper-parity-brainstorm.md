@@ -92,3 +92,8 @@ After locking structure (A or B), use Paper **`get_jsx`** for the Coming Soon fr
 
 - **Fidelity bar (2026-04-30):** **Full structural parity** — rebuild markup/CSS to match Paper’s vertical middle pair, correct single vs double divider geometry, and green divider colors from Paper.
 - **Plan consolidation (2026-04-30):** Use **[2026-04-30-001](../plans/2026-04-30-001-feat-align-landing-text-soon-paper-parity-plan.md)** as the single execution document; extend its checklist and Paper notes rather than spinning a separate plan.
+- **Visual authority (2026-04-30, superseding fidelity row above for strip layout):** Shipped UI follows the **solari / split-flap reference** ([PR #3](https://github.com/adam-zel/pennant-landing-page/pull/3)); Paper **`L1X-0`** remains reference for **typography** where still aligned. See [pennant-soon-strip-solari-reference.md](../solutions/ui-bugs/pennant-soon-strip-solari-reference.md) and plan **001** “Implementation note”.
+
+## Implementation update (2026-04-30)
+
+The repo **SOON** strip is **not** the Paper-green nested-divider column described in “Paper MCP design context” / “Gap summary” above; those sections document the **Paper file state** at brainstorm time. **Production** matches the **four-column solari** reference (split middle **O**, thin **`#1A281C`** verticals). Treat **plans + this brainstorm +** [pennant-soon-strip-solari-reference.md](../solutions/ui-bugs/pennant-soon-strip-solari-reference.md) together when reconciling design source.

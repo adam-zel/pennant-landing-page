@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { HERO_BODY_COPY } from "../siteCopy";
 import { LandingOverlay } from "./LandingOverlay";
@@ -17,25 +17,36 @@ describe("LandingOverlay", () => {
   it("renders S, O, N cells plus solari middle (reads visually as SOON)", () => {
     const { container } = render(<LandingOverlay />);
     const strip = container.querySelector(".pennant-matchup");
-    const cells = [...strip!.querySelectorAll(".pennant-matchup__cell")].map(
+    expect(strip).not.toBeNull();
+    const stripEl = strip as HTMLElement;
+    const cells = [...stripEl.querySelectorAll(".pennant-matchup__cell")].map(
       (el) => el.textContent?.trim(),
     );
     expect(cells).toEqual(["S", "O", "N"]);
-    expect(strip?.querySelectorAll(".pennant-matchup__cell")).toHaveLength(3);
   });
 
   it("uses solari split-flap middle for the second O", () => {
-    render(<LandingOverlay />);
-    expect(screen.getByTestId("matchup-solari-o")).toBeInTheDocument();
-    expect(document.querySelectorAll(".pennant-matchup__solari-half")).toHaveLength(
-      2,
-    );
-    expect(
-      document.querySelector(".pennant-matchup__solari-crease"),
-    ).toBeInTheDocument();
-    expect(document.querySelectorAll(".pennant-matchup__divider")).toHaveLength(
-      3,
-    );
+    const { container } = render(<LandingOverlay />);
+    const strip = container.querySelector(".pennant-matchup");
+    expect(strip).not.toBeNull();
+    const stripEl = strip as HTMLElement;
+
+    const solari = within(stripEl).getByTestId("matchup-solari-o");
+    expect(solari).toBeInTheDocument();
+
+    const halves = solari.querySelectorAll(".pennant-matchup__solari-half");
+    expect(halves).toHaveLength(2);
+    expect([...halves].map((h) => h.textContent?.trim())).toEqual(["O", "O"]);
+
+    const crease = solari.querySelector(".pennant-matchup__solari-crease");
+    expect(crease).toBeInTheDocument();
+    expect(crease).toHaveAttribute("aria-hidden", "true");
+
+    const dividers = stripEl.querySelectorAll(".pennant-matchup__divider");
+    expect(dividers).toHaveLength(3);
+    dividers.forEach((d) => {
+      expect(d).toHaveAttribute("aria-hidden", "true");
+    });
   });
 
   it("hides decorative matchup strip from accessibility tree", () => {

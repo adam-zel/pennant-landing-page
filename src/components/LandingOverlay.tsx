@@ -39,6 +39,11 @@ export function LandingOverlay() {
           </span>
         </h1>
         <p className="pennant-body">{HERO_BODY_COPY}</p>
+        {/*
+          Matchup strip is decorative ornament (solari-style SOON); it is not a separate
+          product-state announcement — hero copy carries messaging. aria-hidden keeps
+          split glyphs from cluttering the SR experience.
+        */}
         <div className="pennant-matchup-shell" aria-hidden>
           <div className="pennant-matchup">
             <div className="pennant-matchup__cell">S</div>

@@ -107,7 +107,9 @@ html[data-theme="night"] body {
 .pennant-matchup-shell {
   display: flex;
   justify-content: flex-start;
-  width: 100%;
+  width: fit-content;
+  max-width: 100%;
+  align-self: flex-start;
   padding: 0;
   border-radius: 4px;
   background-color: #0f1f17;
