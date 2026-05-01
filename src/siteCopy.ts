@@ -5,4 +5,4 @@
 export const SITE_TITLE = "Pennant — Baseball Without The Noise";
 
 export const HERO_BODY_COPY =
-  "Pennant is your new baseball companion. Pick your team once. Open it every day. It tells you what's happening, who's playing, and where your team stands.";
+  "Pennant is your new baseball companion to help you follow your team's journey through all 162 and hopefully beyond.";

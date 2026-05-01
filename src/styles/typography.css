@@ -81,11 +81,14 @@
     "wdth" var(--pennant-clarendon-wdth-hero);
 }
 
+/* Baseball + The Noise.: explicit Clarendon axes (wght 600, wdth 50) */
 .pennant-display--semibold {
+  font-weight: 600;
+  font-stretch: 50%;
   font-variation-settings:
     "wght" 600,
     "opsz" 72,
-    "wdth" var(--pennant-clarendon-wdth-hero);
+    "wdth" 50;
 }
 
 .pennant-body {
@@ -110,6 +113,11 @@
   max-width: 394px;
   width: 100%;
   text-align: left;
+  text-wrap: pretty;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphenate-limit-chars: 6 3 3;
+  overflow-wrap: break-word;
 }
 
 .pennant-matchup {
